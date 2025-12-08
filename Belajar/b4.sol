@@ -9,7 +9,7 @@ interface IContractB3 {
 
 contract b4 {
 
-    address private addressContractB3 = 0x78FD83768c7492aE537924c9658BE3D29D8ffFc1;
+    address private addressContractB3 = 0x78FD83768c7492aE537924c9658BE3D29D8ffFc1; // get address from deploy contract b3
 
     function readValue() public view returns (uint) {
         IContractB3 _iContractB3 = IContractB3(addressContractB3);
