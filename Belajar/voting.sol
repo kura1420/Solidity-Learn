@@ -19,7 +19,7 @@ Rules:
 
 contract Evoting {
 
-    address public owner;
+    address private owner;
     bool internal isVote;
     bool internal isDone;
 
