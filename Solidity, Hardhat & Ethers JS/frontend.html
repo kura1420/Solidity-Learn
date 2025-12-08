@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>MetaMask UI</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-gray-50">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div
+                class="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden"
+            >
+                <!-- Header -->
+                <div
+                    class="bg-gradient-to-r from-purple-600 to-purple-700 p-4 flex justify-between items-center"
+                >
+                    <h1 class="text-white font-bold text-lg">MetaMask</h1>
+                    <button
+                        class="text-white hover:bg-purple-500 p-2 rounded-lg"
+                    >
+                        ⚙️
+                    </button>
+                </div>
+
+                <!-- Balance Section -->
+                <div class="p-6 bg-gray-100 text-center">
+                    <p class="text-gray-600 text-sm mb-2">Information</p>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-1">
+                        Account Address
+                    </h2>
+                    <p class="text-gray-500 text-sm" id="accountAddress">-</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 p-4">
+                    <button
+                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold"
+                        onclick="inc()"
+                    >
+                        Increment
+                    </button>
+                    <button
+                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold"
+                        onclick="setText()"
+                    >
+                        Set Text
+                    </button>
+                    <input
+                        type="text"
+                        id="textInput"
+                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+                        style="height: auto; width: 10px"
+                        placeholder="Enter text"
+                    />
+                </div>
+
+                <!-- Transactions -->
+                <div class="p-4 border-t">
+                    <h3 class="font-bold text-gray-900 mb-3">Descr</h3>
+                    <div class="space-y-2">
+                        <div
+                            class="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
+                        >
+                            <div>
+                                <p class="font-semibold text-gray-900">
+                                    Text Raw
+                                </p>
+                                <p
+                                    class="text-sm text-gray-500"
+                                    id="_textRaw"
+                                ></p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
+                        >
+                            <div>
+                                <p class="font-semibold text-gray-900">Angka</p>
+                            </div>
+                            <p class="font-bold text-green-500" id="_angka"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.15.0/ethers.umd.min.js"
+            integrity="sha512-UXYETj+vXKSURF1UlgVRLzWRS9ZiQTv3lcL4rbeLyqTXCPNZC6PTLF/Ik3uxm2Zo+E109cUpJPZfLxJsCgKSng=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
+        <script src="./abi.js"></script>
+
+        <script>
+            let provider;
+            let account;
+            let _smartContract;
+
+            async function inc() {
+                const contractWithSigner = _smartContract.connect(signer);
+                const tx = await contractWithSigner.inc();
+                await tx.wait();
+
+                const updatedAngka = await _smartContract.angka();
+                document.getElementById("_angka").innerText = updatedAngka;
+
+                await fetchData();
+            }
+
+            async function setText() {
+                const textInput = document.getElementById("textInput").value;
+
+                const contractWithSigner = _smartContract.connect(signer);
+                const tx = await contractWithSigner.setText(textInput);
+                await tx.wait();
+
+                const updatedText = await _smartContract.textRaw();
+                document.getElementById("_textRaw").innerText = updatedText;
+
+                await fetchData();
+            }
+
+            async function connect() {
+                if (!window.ethereum) {
+                    console.log("MetaMask tidak ditemukan!");
+
+                    return;
+                }
+
+                await ethereum.request({ method: "eth_requestAccounts" });
+
+                provider = new ethers.BrowserProvider(window.ethereum);
+                signer = await provider.getSigner();
+                const account = await signer.getAddress();
+
+                document.getElementById("accountAddress").innerText = account;
+
+                _smartContract = new ethers.Contract(
+                    "ambil dari hasil deploy kontrak Anda",
+                    abi,
+                    provider
+                );
+            }
+
+            async function fetchData() {
+                const contractWithSigner = _smartContract.connect(signer);
+
+                const angka = await contractWithSigner.angka();
+                document.getElementById("_angka").innerText = angka;
+
+                const textRaw = await _smartContract.textRaw();
+                document.getElementById("_textRaw").innerText = textRaw;
+            }
+
+            (async () => {
+                await connect();
+                await fetchData();
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>MetaMask UI</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-gray-50">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div
+                class="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden"
+            >
+                <!-- Header -->
+                <div
+                    class="bg-gradient-to-r from-purple-600 to-purple-700 p-4 flex justify-between items-center"
+                >
+                    <h1 class="text-white font-bold text-lg">MetaMask</h1>
+                    <button
+                        class="text-white hover:bg-purple-500 p-2 rounded-lg"
+                    >
+                        ⚙️
+                    </button>
+                </div>
+
+                <!-- Balance Section -->
+                <div class="p-6 bg-gray-100 text-center">
+                    <p class="text-gray-600 text-sm mb-2">Total Balance</p>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-1">
+                        2.45 ETH
+                    </h2>
+                    <p class="text-gray-500 text-sm">≈ $4,205.00 USD</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 p-4">
+                    <button
+                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold"
+                    >
+                        Send
+                    </button>
+                    <button
+                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold"
+                    >
+                        Receive
+                    </button>
+                    <button
+                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold"
+                    >
+                        Swap
+                    </button>
+                </div>
+
+                <!-- Transactions -->
+                <div class="p-4 border-t">
+                    <h3 class="font-bold text-gray-900 mb-3">
+                        Recent Activity
+                    </h3>
+                    <div class="space-y-2">
+                        <div
+                            class="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
+                        >
+                            <div>
+                                <p class="font-semibold text-gray-900">
+                                    Sent ETH
+                                </p>
+                                <p class="text-sm text-gray-500">2 hours ago</p>
+                            </div>
+                            <p class="font-bold text-red-500">-0.5 ETH</p>
+                        </div>
+                        <div
+                            class="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100"
+                        >
+                            <div>
+                                <p class="font-semibold text-gray-900">
+                                    Received ETH
+                                </p>
+                                <p class="text-sm text-gray-500">1 day ago</p>
+                            </div>
+                            <p class="font-bold text-green-500">+1.0 ETH</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.15.0/ethers.umd.min.js"
+            integrity="sha512-UXYETj+vXKSURF1UlgVRLzWRS9ZiQTv3lcL4rbeLyqTXCPNZC6PTLF/Ik3uxm2Zo+E109cUpJPZfLxJsCgKSng=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
+
+        <script>
+            let provider;
+
+            let account;
+
+            async function connect() {
+                await ethereum.request({ method: "eth_requestAccounts" });
+
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+
+                account = await provider.getSigner().getAddress();
+
+                console.log("Connected account:", account);
+            }
+
+            connect();
+        </script>
+    </body>
+</html>
