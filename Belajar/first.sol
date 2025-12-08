@@ -66,11 +66,11 @@ contract b1 {
         return _value; // execution cost: 1115 gas
     }
 
-    // function pullEth() public payable {
-    //     // check balance account
-    //     // set value ETH
-    //     // check ETH from Deployed Contract
-    // }
+    function pullEth() public payable {
+        // check balance account
+        // set value ETH
+        // check ETH from Deployed Contract
+    }
 
     mapping (string => uint) private _map;
     function addMap(string memory _name, uint _value) private {
@@ -91,9 +91,74 @@ contract b1 {
 
         loop++;
     }
-    function sampleIf2(string memory _value) public pure returns (string memory) {
+    function sampleIf2(string memory _value) private pure returns (string memory) {
         require(keccak256(abi.encodePacked(_value)) == keccak256(abi.encodePacked("123")), "Value is wrong");
         
         return _value;
     }
+
+    function checkAddress() private view returns (address) {
+        return msg.sender;
+    }
+
+    function checkBalance() private view returns (uint) {
+        return address(this).balance;
+    }
+
+    function topUp() public payable returns (uint) {
+        return msg.value;
+    }
+
+    modifier rule(uint _value) {
+        require(_value >= 10, "Nilai yang dimasukkan < 10");
+        _;
+    }
+    function executeRule(uint _value) private rule(_value) {
+        loop++;
+    }
+
+    event logNumber(uint _value);
+    function addValue(uint _value) private {
+        loop += _value;
+
+        emit logNumber(_value); // see "raw logs" you can send to frontend
+    }
+
+    function inheritence1() public pure returns (string memory) {
+        return "satu";
+    }
+
+    function inheritence2() public pure virtual returns (string memory) {
+        return "Hello, ";
+    }
+
+    function say1() public pure returns (string memory) {
+        return "i'm b1";
+    }
+
+}
+
+contract b2 {
+    function say2() public pure returns (string memory) {
+        return "i'm b2";
+    }
+}
+
+contract ChildOne is b1 {
+    //
+    function inheritence2() public pure override returns (string memory) {
+        return "Hai hai";
+    }
+
+    function contactValue() public pure returns (string memory) {
+        string memory _i2 = super.inheritence2();
+
+        return string.concat(_i2, " dafi deva");
+    }
+}
+
+contract ChildTwo is b1, b2 {
+    function saySuper() public pure returns (string memory) {
+        return string.concat(say1(), " - ", say2());
+    }    
 }
